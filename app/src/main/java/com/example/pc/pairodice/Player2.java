@@ -16,9 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends ActionBarActivity {
+public class Player2 extends ActionBarActivity {
     private FrameLayout die1, die2;
     private Button roll, hold;
+    private int score;
     TextView currentScore, player1Score, player2Score;
     private int totalscore, scorep1=0, scorep2=0;
     private int currentRndscore;
@@ -26,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.player2);
 
         die1 = (FrameLayout) findViewById(R.id.die1);
         die2 = (FrameLayout) findViewById(R.id.die2);
@@ -35,12 +36,11 @@ public class MainActivity extends ActionBarActivity {
         currentScore = (TextView) findViewById(R.id.round);
 
         Intent intent = getIntent();
-        scorep2 = intent.getIntExtra("Scorep2", scorep2);
         scorep1 = intent.getIntExtra("Scorep1", scorep1);
-        Toast.makeText(this, "The score is: " + scorep2, Toast.LENGTH_LONG).show();
+        scorep2 = intent.getIntExtra("Scorep2", scorep2);
+        Toast.makeText(this, "The score is: " + scorep1, Toast.LENGTH_LONG).show();
         player1Score.setText("P1: " + scorep1);
         player2Score.setText("P2: " + scorep2);
-
 
         roll = (Button) findViewById(R.id.button);
         roll.setOnClickListener(new View.OnClickListener() {
@@ -55,14 +55,12 @@ public class MainActivity extends ActionBarActivity {
         hold.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scorep1 += currentRndscore;
-                player1Score.setText("P1: " + scorep1);
-                //currentRndscore = 0;
 
-                if(scorep1 >= 100){
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("You Won!");
-                    alertDialog.setMessage("Yipeeaieahhh!");
+                scorep2 += currentRndscore;
+                if(scorep2>=100){
+                    AlertDialog alertDialog = new AlertDialog.Builder(Player2.this).create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.setMessage("Alert message to be shown");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -70,17 +68,20 @@ public class MainActivity extends ActionBarActivity {
                                 }
                             });
                     alertDialog.show();
-                    scorep1=0; scorep2=0; totalscore=0;
                 } else {
-                    Intent intent = new Intent(MainActivity.this, Player2.class);
+                    Intent intent = new Intent(Player2.this,MainActivity.class);
                     intent.putExtra("Scorep1", scorep1);
                     intent.putExtra("Scorep2", scorep2);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
+                    //player2Score.setText("P2: " + scorep2);
+                    //currentRndscore = 0;
                 }
 
             }
         });
+
+
     }
 
     //get two random ints between 1 and 6 inclusive
@@ -93,35 +94,19 @@ public class MainActivity extends ActionBarActivity {
         if(val1 == 1 || val2 == 1){
             totalscore = 0;
             currentScore.setText("Round: "+ totalscore);
-
             scorep2 += totalscore;
 
-            Intent intent = new Intent(MainActivity.this,Player2.class);
-            intent.putExtra("Scorep1", +scorep1);
-            intent.putExtra("Scorep2", +scorep2);
+            Intent intent = new Intent(Player2.this,MainActivity.class);
+            intent.putExtra("Scorep1", scorep1);
+            intent.putExtra("Scorep2", scorep2);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         } else {
             totalscore = val1 + val2 ;
-            currentRndscore += totalscore;
-            player1Score.setText("P1: " + scorep1);
             currentScore.setText("Round: " + totalscore);
+            currentRndscore += totalscore;
+            player2Score.setText("P2: "+scorep2);
         }
-
-        /*if(currentRndscore == 100){
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            alertDialog.setTitle("You Won!");
-            alertDialog.setMessage("Yipeeaieahhh!");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
-        }*/
-
-
     }
 
     //set the appropriate picture for each die per int
